@@ -8,7 +8,6 @@ export const Container = styled(TextInput)`
 
   border-radius: 6px;
   padding: 16px;
-  margin-bottom: 20px;
 
   ${({ theme }) => css`
     background-color: ${theme.COLORS.GRAY_700};
