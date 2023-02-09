@@ -10,19 +10,19 @@ import { Alert } from 'react-native'
 import { Container, Content, Icon } from './styles'
 
 export function NewGroup() {
-  const [group, setGroup] = useState('')
+  const [groupInput, setGroupInput] = useState('')
 
   const navigation = useNavigation()
 
-  async function handleNewGroup() {
+  async function handleCreateNewGroup() {
     try {
-      if (group.trim().length === 0) {
+      if (groupInput.trim().length === 0) {
         return Alert.alert('Novo grupo', 'Informe o nome da turma')
       }
 
-      await groupCreate(group)
+      await groupCreate(groupInput)
 
-      navigation.navigate('players', { group })
+      navigation.navigate('players', { group: groupInput })
     } catch (error) {
       if (error instanceof AppError) {
         Alert.alert('Novo grupo', 'Não foi possivel criar um novo grupo')
@@ -45,10 +45,10 @@ export function NewGroup() {
 
         <Input
           placeholder="Nome da turma"
-          onChangeText={(event) => setGroup(event)}
+          onChangeText={(event) => setGroupInput(event)}
         />
 
-        <Button title="Criar" onPress={handleNewGroup} />
+        <Button title="Criar" onPress={handleCreateNewGroup} />
       </Content>
     </Container>
   )

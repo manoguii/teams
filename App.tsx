@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import theme from './src/theme/index'
 import { ThemeProvider } from 'styled-components/native'
 import {

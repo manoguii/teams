@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-catch */
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { GROUP_COLLECTION } from '@storage/storageConfig'
 import { AppError } from '@utils/AppError'
