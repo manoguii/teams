@@ -6,7 +6,7 @@ import { ListEmpty } from '@components/listEmpty'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { groupsGetAll } from '@storage/group/groupsGetAll'
 import { useCallback, useState } from 'react'
-import { FlatList } from 'react-native'
+import { Alert, FlatList } from 'react-native'
 import { Container } from './styles'
 
 export function Groups() {
@@ -25,6 +25,7 @@ export function Groups() {
       setGroups(groupsInStorage)
     } catch (error) {
       console.log(error)
+      Alert.alert('Turmas', 'Não foi possível carregar as turmas')
     }
   }
 

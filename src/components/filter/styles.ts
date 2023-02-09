@@ -21,6 +21,7 @@ export const Container = styled(TouchableOpacity)<FilterStyleProps>`
   align-items: center;
   justify-content: center;
 `
+
 export const Title = styled.Text`
   text-transform: uppercase;
 
