@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button } from '@components/button'
 import { ButtonIcon } from '@components/buttonIcon'
 import { Filter } from '@components/filter'
@@ -8,9 +9,11 @@ import { ListEmpty } from '@components/listEmpty'
 import { PlayerCard } from '@components/playerCard'
 import { useRoute } from '@react-navigation/native'
 import { addPlayerByGroup } from '@storage/player/addPlayerByGroup'
+import { getPlayerByGroupAndTeam } from '@storage/player/getPlayerByGroupAndTeam'
+import { PlayerStorageDTO } from '@storage/player/PlayerStorageDTO'
 import { AppError } from '@utils/AppError'
-import { useState } from 'react'
-import { Alert, FlatList } from 'react-native'
+import { useRef, useEffect, useState } from 'react'
+import { Alert, FlatList, TextInput } from 'react-native'
 import { Container, Form, HeaderList, NumberOfPlayers } from './styles'
 
 interface RouteParams {
@@ -19,8 +22,10 @@ interface RouteParams {
 
 export function Players() {
   const [team, setTeam] = useState('time a')
-  const [players] = useState([])
+  const [players, setPlayers] = useState<PlayerStorageDTO[]>([])
   const [newPlayerName, setNewPlayerName] = useState('')
+
+  const newPlayerNameInputRef = useRef<TextInput>(null)
 
   async function handleAddPlayer() {
     if (newPlayerName.trim().length === 0) {
@@ -37,6 +42,12 @@ export function Players() {
 
     try {
       await addPlayerByGroup(newPlayer, group)
+
+      newPlayerNameInputRef.current?.blur()
+
+      fetchPlayersByTeam()
+
+      setNewPlayerName('')
     } catch (error) {
       if (error instanceof AppError) {
         return Alert.alert('Nova pessoa', error.message)
@@ -47,9 +58,27 @@ export function Players() {
     }
   }
 
+  async function fetchPlayersByTeam() {
+    try {
+      const playerByTeam = await getPlayerByGroupAndTeam(group, team)
+
+      setPlayers(playerByTeam)
+    } catch (error) {
+      console.log(error)
+      Alert.alert(
+        'Pessoas',
+        'Não foi possivel carregar as pessoas filtradas do time selecionado',
+      )
+    }
+  }
+
   const route = useRoute()
 
   const { group } = route.params as RouteParams
+
+  useEffect(() => {
+    fetchPlayersByTeam()
+  }, [team])
 
   return (
     <Container>
@@ -62,6 +91,10 @@ export function Players() {
           placeholder="Nome da pessoa"
           autoCorrect={false}
           onChangeText={(event) => setNewPlayerName(event)}
+          value={newPlayerName}
+          inputRef={newPlayerNameInputRef} // passa referencia do input para tirar foco do input ao adicionar player
+          onSubmitEditing={handleAddPlayer} // usa botão do teclado para disparar a função
+          returnKeyType="done"
         />
 
         <ButtonIcon icon="add" onPress={handleAddPlayer} />
@@ -86,9 +119,9 @@ export function Players() {
 
       <FlatList
         data={players}
-        keyExtractor={(item) => item}
+        keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
-          <PlayerCard onRemove={() => {}} name={item} />
+          <PlayerCard onRemove={() => {}} name={item.name} />
         )}
         ListEmptyComponent={() => (
           <ListEmpty message="Não há pessoas nesse time" />
