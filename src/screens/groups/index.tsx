@@ -3,19 +3,36 @@ import { GroupCard } from '@components/groupCard'
 import { Header } from '@components/header'
 import { Highlight } from '@components/highligth'
 import { ListEmpty } from '@components/listEmpty'
-import { useNavigation } from '@react-navigation/native'
-import { useState } from 'react'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { groupsGetAll } from '@storage/group/groupsGetAll'
+import { useCallback, useState } from 'react'
 import { FlatList } from 'react-native'
 import { Container } from './styles'
 
 export function Groups() {
-  const [groups, setGroups] = useState<string[]>(['Futebol de domingo'])
+  const [groups, setGroups] = useState<string[]>([])
 
   const navigation = useNavigation()
 
   function handleNewGroup() {
     navigation.navigate('newGroup')
   }
+
+  async function fetchGroups() {
+    try {
+      const groupsInStorage = await groupsGetAll()
+
+      setGroups(groupsInStorage)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchGroups()
+    }, []),
+  )
 
   return (
     <Container>
