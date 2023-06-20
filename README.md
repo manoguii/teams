@@ -1,13 +1,13 @@
 # Teams
 
+<img
+  alt='Imagem do projeto'
+  src='public/teams.png'
+/>
+
 ## Sobre
 
 Este é um aplicativo onde você pode criar grupos para dividir seus amigos em equipes. Construído para fins de estudo durante o Ignite React Native da Rocketseat.
-
-<Image
-  alt={`Imagem do projeto`}
-  src={`/images/teams/teams.png`}
-/>
 
 ## Instalação
 
